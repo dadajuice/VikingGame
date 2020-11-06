@@ -8,8 +8,8 @@ import java.awt.image.BufferedImage;
 public class RenderingEngine {
 
     private static RenderingEngine instance;
-    private JFrame frame;
     private JPanel panel;
+    private Screen screen;
     private BufferedImage bufferedImage;
 
     public static RenderingEngine getInstance() {
@@ -19,13 +19,16 @@ public class RenderingEngine {
         return instance;
     }
 
+    public Screen getScreen() {
+        return screen;
+    }
+
     public void start() {
-        frame.setVisible(true);
+        screen.start();
     }
 
     public void stop() {
-        frame.setVisible(false);
-        frame.dispose();
+        screen.end();
     }
 
     public Buffer getRenderingBuffer() {
@@ -57,17 +60,13 @@ public class RenderingEngine {
         panel.setBackground(Color.blue);
         panel.setFocusable(true);
         panel.setDoubleBuffered(true);
-        frame.add(panel);
+        screen.setPanel(panel);
     }
 
     private void initializeFrame() {
-        frame = new JFrame();
-        frame.setSize(800, 600);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
-        frame.setTitle("Moving Rectangle Game");
-        frame.setUndecorated(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        screen = new Screen();
+        screen.setSize(800, 600);
+        screen.setTitle("Test Game");
     }
 
     private RenderingHints getOptimalRenderingHints() {
