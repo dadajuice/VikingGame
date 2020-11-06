@@ -7,11 +7,13 @@ public class VikingGame extends Game {
 
     private GamePad gamePad;
     private Player player;
+    private World world;
 
     public VikingGame() {
         gamePad = new GamePad();
         player = new Player(gamePad);
         player.teleport(200, 200);
+        world = new World();
     }
 
     @Override
@@ -24,6 +26,7 @@ public class VikingGame extends Game {
 
     @Override
     public void draw(Buffer buffer) {
+        world.draw(buffer);
         player.draw(buffer);
     }
 
