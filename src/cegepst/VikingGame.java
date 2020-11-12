@@ -3,6 +3,11 @@ package cegepst;
 import cegepst.engine.Buffer;
 import cegepst.engine.Game;
 import cegepst.engine.RenderingEngine;
+import cegepst.engine.Sound;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 public class VikingGame extends Game {
 
@@ -10,6 +15,7 @@ public class VikingGame extends Game {
     private Player player;
     private World world;
     private Tree tree;
+    private int soundCooldown;
 
     public VikingGame() {
         gamePad = new GamePad();
@@ -22,9 +28,21 @@ public class VikingGame extends Game {
     @Override
     public void update() {
         player.update();
+
+        soundCooldown--;
+        if (soundCooldown < 0) {
+            soundCooldown = 0;
+        }
+
         if (gamePad.isQuitPressed()) {
             super.stop();
         }
+
+        if (gamePad.isFirePressed() && soundCooldown == 0) {
+            soundCooldown = 40;
+            Sound.play("sounds/best1.wav");
+        }
+
         if (player.getY() < tree.getY() + 52) {
             tree.blockadeFromTop();
         } else {
@@ -47,7 +65,19 @@ public class VikingGame extends Game {
     @Override
     public void initialize() {
         RenderingEngine.getInstance().getScreen().hideCursor();
-        RenderingEngine.getInstance().getScreen().fullScreen();
+        //RenderingEngine.getInstance().getScreen().fullScreen();
+
+        try {
+            Clip clip = AudioSystem.getClip();
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+                    this.getClass().getClassLoader().getResourceAsStream("musics/map1.wav")
+            );
+            clip.open(inputStream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
